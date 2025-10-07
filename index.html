@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title> UCVdent — Prototipo</title>
+  <meta name="description" content="Marketplace para estudiantes de estomatología: vender, alquilar o intercambiar materiales." />
+  <style>
+    :root{
+      --teal:#1f7f78; /* principal */
+      --teal-50:#e9f6f5;
+      --accent:#f59e40; /* naranja */
+      --bg:#f6fbfb;
+      --card:#ffffff;
+      --muted:#7b8b88;
+      --radius:12px;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:#073233}
+    header{background:linear-gradient(180deg,white, #f7fffe);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e7f2f1}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:10px;background:var(--teal);display:grid;place-items:center;color:white;font-weight:700}
+    nav{display:flex;gap:18px;align-items:center}
+    nav a{color:inherit;text-decoration:none;font-weight:600}
+    .cta{background:var(--accent);color:white;padding:10px 14px;border-radius:10px;font-weight:700}
+
+    .hero{padding:40px 24px;background:var(--teal-50);border-bottom:1px solid #e6f2f1}
+    .container{max-width:1100px;margin:0 auto}
+    .hero-grid{display:grid;gap:18px}
+    .hero h1{font-size:36px;margin:0 0 6px}
+    .hero p{margin:0;color:var(--muted)}
+    .search-row{display:flex;gap:12px;margin-top:18px}
+    .search{flex:1;display:flex;align-items:center;background:white;border-radius:12px;padding:12px;border:1px solid #e8f1ef}
+    .search input{border:0;outline:0;font-size:15px;flex:1}
+    .filters{display:flex;gap:8px}
+    .filter{background:white;padding:10px 12px;border-radius:12px;border:1px solid #e8f1ef}
+
+    main{padding:28px 24px}
+    .products{max-width:1100px;margin:0 auto}
+    .section-title{font-size:22px;margin-bottom:12px}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+    .card{background:var(--card);border-radius:12px;padding:12px;border:1px solid #e9f8f7;box-shadow:0 6px 18px rgba(15,47,46,0.03)}
+    .card img{width:100%;height:140px;object-fit:contain;border-radius:8px;background:#f8fbfb}
+    .card .title{font-weight:700;margin-top:10px}
+    .card .meta{color:var(--muted);font-size:14px;margin-top:6px}
+    .price{font-weight:800;margin-top:8px}
+    .btn{display:inline-block;padding:8px 12px;border-radius:10px;text-decoration:none;font-weight:700}
+    .btn-primary{background:var(--teal);color:white}
+    .btn-ghost{background:transparent;border:1px solid #e6f2f1;color:var(--teal)}
+
+    .testimonial{margin-top:18px;background:white;padding:16px;border-radius:12px;border:1px solid #e8f6f5}
+
+    footer{padding:20px 24px;margin-top:28px;background:#eaf8f7}
+    .footer-grid{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;gap:12px}
+
+    /* modal & form */
+    .modal{position:fixed;inset:0;background:rgba(2,12,11,0.45);display:none;align-items:center;justify-content:center;padding:16px}
+    .modal.show{display:flex}
+    .dialog{background:white;border-radius:12px;padding:18px;max-width:720px;width:100%;box-shadow:0 20px 50px rgba(3,20,19,0.25)}
+    form .row{display:flex;gap:8px}
+    form label{font-size:13px;margin-bottom:6px;display:block}
+    input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #e7efee;background:#fcfffe}
+    textarea{min-height:100px}
+    .form-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+
+    /* responsive */
+    @media (min-width:900px){
+      .hero-grid{grid-template-columns:1fr 380px;align-items:center}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">OM</div>
+      <div>
+        <div style="font-weight:800"> UCVdent</div>
+        <div style="font-size:12px;color:var(--muted)">Compra · Alquila · Intercambia</div>
+      </div>
+    </div>
+    <nav>
+      <a href="#">Inicio</a>
+      <a href="#productos">Productos</a>
+      <a href="#publicar" id="openPublish">Publicar</a>
+      <a href="#miCuenta">Mi cuenta</a>
+      <a class="cta" href="#publicar" id="openPublish2">Publicar producto</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <h1>Ahorra en tus materiales de práctica o vende los que ya no uses.</h1>
+        <p>Compra, vende o alquila entre estudiantes de estomatología de tu universidad.</p>
+
+        <div class="search-row">
+          <div class="search" role="search" aria-label="Buscar productos">
+            <input id="searchInput" placeholder="Buscar productos... (ej. turbina, pinza, simulador)" />
+            <button class="btn btn-primary" id="searchBtn" style="margin-left:8px">Buscar</button>
+          </div>
+          <div class="filters">
+            <div class="filter"><select id="filterType"><option value="">Tipo</option><option>Venta</option><option>Alquiler</option><option>Intercambio</option></select></div>
+            <div class="filter"><select id="filterCategory"><option value="">Categoría</option><option>Instrumental</option><option>Materiales</option><option>Equipos</option><option>Libros</option></select></div>
+            <div class="filter"><select id="filterUniversity"><option value="">Universidad</option><option>UCV</option><option>UPAO</option><option>UNT</option></select></div>
+          </div>
+        </div>
+      </div>
+
+      <aside style="padding:18px;background:linear-gradient(180deg,#ffffff,#f6fffd);border-radius:12px">
+        <strong>Publica rápido</strong>
+        <p style="color:var(--muted);font-size:14px">Sube imágenes, indica el estado y coordina con otros estudiantes de tu universidad.</p>
+        <div style="margin-top:12px">
+          <a class="btn btn-primary" id="openPublishAside">Publicar producto</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <main>
+    <div class="products container" id="productos">
+      <div class="section-title">Productos destacados</div>
+      <div class="cards" id="cards">
+        <!-- cards generadas por JS -->
+      </div>
+
+      <div class="testimonial">
+        "Gracias a UCVdent, pude ahorrar en mis prácticas." — Ana, UCV
+	<br>
+	Otros comentarios...
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div>© UCVdent — Proyecto estudiantil</div>
+      <div style="color:var(--muted)">Términos • Privacidad • Contacto • FAQ</div>
+    </div>
+  </footer>
+
+  <!-- Modal publicar -->
+  <div class="modal" id="modal">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="pubTitle">
+      <h3 id="pubTitle">Publicar producto</h3>
+      <form id="publishForm">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label for="title">Nombre del producto</label>
+            <input id="title" required placeholder="Turbina dental usada, Pinza, Simulador" />
+          </div>
+          <div>
+            <label for="type">Tipo</label>
+            <select id="type"><option>Venta</option><option>Alquiler</option><option>Intercambio</option></select>
+          </div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label for="category">Categoría</label>
+          <select id="category"><option>Instrumental</option><option>Materiales</option><option>Equipos</option><option>Libros</option></select>
+        </div>
+
+        <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label for="price">Precio (S/)</label>
+            <input id="price" type="number" min="0" placeholder="Ej. 80" />
+          </div>
+          <div>
+            <label for="univ">Universidad / Ciudad</label>
+            <input id="univ" placeholder="Ej. UCV - Trujillo" />
+          </div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label for="desc">Descripción</label>
+          <textarea id="desc" placeholder="Estado del producto, uso, accesorios incluidos, contacto"></textarea>
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+          <label for="images">Imágenes</label>
+          <input id="images" type="file" accept="image/*" multiple />
+        </div>
+
+        <div class="form-footer">
+          <button type="button" class="btn btn-ghost" id="closeModal">Cancelar</button>
+          <button class="btn btn-primary" type="submit">Publicar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Datos de ejemplo
+    const sample = [
+      {id:1,title:'Turbina dental usada',category:'Instrumental',type:'Venta',price:80,univ:'UPAO',img:'https://images.unsplash.com/photo-1582719478179-8f0efb2ff9b9?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=1'},
+      {id:2,title:'Pinza dental',category:'Instrumental',type:'Venta',price:35,univ:'UNT',img:'https://images.unsplash.com/photo-1606813902860-3eca3f2f2b7a?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=2'},
+      {id:3,title:'Material de impresión (kit)',category:'Materiales',type:'Venta',price:45,univ:'UCV',img:'https://images.unsplash.com/photo-1581092795363-572c8b5b2b3a?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=3'},
+      {id:4,title:'Simulador dentario',category:'Equipos',type:'Alquiler',price:200,univ:'UCV',img:'https://images.unsplash.com/photo-1598300081965-7b0d7a3b7c7d?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=4'}
+    ];
+
+    const cardsEl = document.getElementById('cards');
+
+    function renderCards(list){
+      cardsEl.innerHTML = '';
+      list.forEach(p=>{
+        const div = document.createElement('div'); div.className='card';
+        div.innerHTML = `
+          <img src="${p.img}" alt="${p.title}" />
+          <div class="title">${p.title}</div>
+          <div class="meta">${p.category} • ${p.univ} • ${p.type}</div>
+          <div class="price">S/${p.price}</div>
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <a class="btn btn-primary" href="#">Contactar</a>
+            <a class="btn btn-ghost" href="#">Ver</a>
+          </div>
+        `;
+        cardsEl.appendChild(div);
+      })
+    }
+
+    renderCards(sample);
+
+    // Buscador y filtros (simple)
+    document.getElementById('searchBtn').addEventListener('click',()=>applyFilters());
+    document.getElementById('searchInput').addEventListener('keydown',(e)=>{ if(e.key==='Enter') applyFilters(); });
+    ['filterType','filterCategory','filterUniversity'].forEach(id=>{
+      document.getElementById(id).addEventListener('change',applyFilters);
+    })
+
+    function applyFilters(){
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const t = document.getElementById('filterType').value;
+      const c = document.getElementById('filterCategory').value;
+      const u = document.getElementById('filterUniversity').value;
+      const res = sample.filter(p=>{
+        if(q && !(p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q))) return false;
+        if(t && p.type!==t) return false;
+        if(c && p.category!==c) return false;
+        if(u && p.univ!==u) return false;
+        return true;
+      });
+      renderCards(res);
+    }
+
+    // Modal publicar
+    const modal = document.getElementById('modal');
+    function openModal(){ modal.classList.add('show'); document.getElementById('title').focus(); }
+    function closeModal(){ modal.classList.remove('show'); document.getElementById('publishForm').reset(); }
+    document.getElementById('openPublish').addEventListener('click',(e)=>{ e.preventDefault(); openModal(); });
+    document.getElementById('openPublish2').addEventListener('click',(e)=>{ e.preventDefault(); openModal(); });
+    document.getElementById('openPublishAside').addEventListener('click',(e)=>{ e.preventDefault(); openModal(); });
+    document.getElementById('closeModal').addEventListener('click',closeModal);
+    modal.addEventListener('click',(e)=>{ if(e.target===modal) closeModal(); });
+
+    // Envío de formulario (simulado — agrega a lista en memoria)
+    document.getElementById('publishForm').addEventListener('submit',function(e){
+      e.preventDefault();
+      const newP = {
+        id: sample.length+1,
+        title: document.getElementById('title').value || 'Producto sin nombre',
+        category: document.getElementById('category').value,
+        type: document.getElementById('type').value,
+        price: Number(document.getElementById('price').value) || 0,
+        univ: document.getElementById('univ').value || 'Sin especificar',
+        img: 'https://images.unsplash.com/photo-1582719478179-8f0efb2ff9b9?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=1'
+      };
+      sample.unshift(newP);
+      renderCards(sample);
+      closeModal();
+      alert('Producto publicado (simulado). Revisa la lista.');
+    });
+
+  </script>
+</body>
+</html>
